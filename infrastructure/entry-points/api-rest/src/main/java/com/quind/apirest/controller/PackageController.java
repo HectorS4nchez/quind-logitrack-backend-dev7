@@ -1,5 +1,6 @@
 package com.quind.apirest.controller;
 
+import com.quind.apirest.client.GeocodingClient;
 import com.quind.domain.model.PackageModel;
 import com.quind.domain.model.enums.PackageStatus;
 import com.quind.domain.usecase.PackageUseCase;
@@ -10,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/packages")
@@ -18,6 +21,7 @@ import java.util.List;
 public class PackageController {
 
     private final PackageUseCase packageUseCase;
+    private final GeocodingClient geocodingClient;
 
     @PostMapping
     public ResponseEntity<PackageModel> createPackage(@RequestBody PackageModel pkg) {
@@ -69,11 +73,19 @@ public class PackageController {
     }
 
     @PostMapping("/{trackingId}/locations")
-    public ResponseEntity<PackageModel> addLocationToPackage(
+    public ResponseEntity<?> addLocationToPackage(
             @PathVariable String trackingId,
             @RequestParam String city,
             @RequestParam String country,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime timestamp) {
+
+        if (!geocodingClient.validateLocation(city, country)) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Invalid location: " + city + ", " + country);
+            error.put("message", "The location could not be found in the geocoding service");
+            return ResponseEntity.badRequest().body(error);
+        }
+
         try {
             PackageModel updated;
             if (timestamp != null) {
