@@ -3,6 +3,8 @@ package com.quind.domain.model;
 import java.time.LocalDateTime;
 
 public class LocationHistoryModel {
+
+    private Long id;
     private String city;
     private String country;
     private LocalDateTime timestamp;
@@ -38,5 +40,13 @@ public class LocationHistoryModel {
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

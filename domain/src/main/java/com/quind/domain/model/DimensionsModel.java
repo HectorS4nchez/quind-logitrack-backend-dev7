@@ -2,6 +2,7 @@ package com.quind.domain.model;
 
 public class DimensionsModel {
 
+    private Long id;
     private double height;
     private double width;
     private double depth;
@@ -50,5 +51,13 @@ public class DimensionsModel {
     public void setDepth(double depth) {
         validateDimension(depth, "Depth");
         this.depth = depth;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

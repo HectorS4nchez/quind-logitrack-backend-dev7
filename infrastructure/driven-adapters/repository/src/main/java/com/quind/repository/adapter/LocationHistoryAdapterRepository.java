@@ -1,5 +1,7 @@
 package com.quind.repository.adapter;
 
+import com.quind.domain.exception.LocationHistoryNotFoundException;
+import com.quind.domain.exception.RepositoryOperationException;
 import com.quind.domain.model.LocationHistoryModel;
 import com.quind.domain.port.repository.LocationHistoryRepository;
 import com.quind.repository.adapter.jpa.entity.LocationHistoryEntity;
@@ -23,59 +25,127 @@ public class LocationHistoryAdapterRepository implements LocationHistoryReposito
 
     @Override
     public LocationHistoryModel save(LocationHistoryModel locationHistoryModel) {
-        LocationHistoryEntity entity = LocationHistoryMapper.toEntity(locationHistoryModel);
-        LocationHistoryEntity savedEntity = jpaRepository.save(entity);
-        return LocationHistoryMapper.toDomain(savedEntity);
+        try {
+            LocationHistoryEntity entity = LocationHistoryMapper.toEntity(locationHistoryModel);
+            LocationHistoryEntity savedEntity = jpaRepository.save(entity);
+            return LocationHistoryMapper.toDomain(savedEntity);
+        } catch (Exception ex) {
+            throw new RepositoryOperationException("Failed to save location history", ex);
+        }
     }
 
     @Override
     public Optional<LocationHistoryModel> findById(Long id) {
-        return jpaRepository.findById(id)
-                .map(LocationHistoryMapper::toDomain);
+        try {
+            return jpaRepository.findById(id)
+                    .map(LocationHistoryMapper::toDomain);
+        } catch (Exception ex) {
+            throw new RepositoryOperationException("Failed to find location history by ID: " + id, ex);
+        }
     }
 
     @Override
     public List<LocationHistoryModel> findAll() {
-        return jpaRepository.findAll().stream()
-                .map(LocationHistoryMapper::toDomain)
-                .collect(Collectors.toList());
+        try {
+            return jpaRepository.findAll().stream()
+                    .map(LocationHistoryMapper::toDomain)
+                    .collect(Collectors.toList());
+        } catch (Exception ex) {
+            throw new RepositoryOperationException("Failed to retrieve all location histories", ex);
+        }
     }
 
     @Override
     public List<LocationHistoryModel> findByCity(String city) {
-        return jpaRepository.findByCity(city).stream()
-                .map(LocationHistoryMapper::toDomain)
-                .collect(Collectors.toList());
+        try {
+            if (city == null || city.trim().isEmpty()) {
+                throw new IllegalArgumentException("City cannot be null or empty");
+            }
+            return jpaRepository.findByCity(city).stream()
+                    .map(LocationHistoryMapper::toDomain)
+                    .collect(Collectors.toList());
+        } catch (IllegalArgumentException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new RepositoryOperationException("Failed to find location histories by city: " + city, ex);
+        }
     }
 
     @Override
     public List<LocationHistoryModel> findByCountry(String country) {
-        return jpaRepository.findByCountry(country).stream()
-                .map(LocationHistoryMapper::toDomain)
-                .collect(Collectors.toList());
+        try {
+            if (country == null || country.trim().isEmpty()) {
+                throw new IllegalArgumentException("Country cannot be null or empty");
+            }
+            return jpaRepository.findByCountry(country).stream()
+                    .map(LocationHistoryMapper::toDomain)
+                    .collect(Collectors.toList());
+        } catch (IllegalArgumentException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new RepositoryOperationException("Failed to find location histories by country: " + country, ex);
+        }
     }
 
     @Override
     public List<LocationHistoryModel> findByDateRange(LocalDateTime start, LocalDateTime end) {
-        return jpaRepository.findByDateRange(start, end).stream()
-                .map(LocationHistoryMapper::toDomain)
-                .collect(Collectors.toList());
+        try {
+            if (start == null || end == null) {
+                throw new IllegalArgumentException("Start and end dates cannot be null");
+            }
+            if (start.isAfter(end)) {
+                throw new IllegalArgumentException("Start date must be before end date");
+            }
+            return jpaRepository.findByDateRange(start, end).stream()
+                    .map(LocationHistoryMapper::toDomain)
+                    .collect(Collectors.toList());
+        } catch (IllegalArgumentException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new RepositoryOperationException(
+                    String.format("Failed to find location histories by date range: %s to %s", start, end), ex);
+        }
     }
 
     @Override
     public boolean existsById(Long id) {
-        return jpaRepository.existsById(id);
+        try {
+            return jpaRepository.existsById(id);
+        } catch (Exception ex) {
+            throw new RepositoryOperationException("Failed to check location history existence for ID: " + id, ex);
+        }
     }
 
     @Override
     public void deleteById(Long id) {
-        jpaRepository.deleteById(id);
+        try {
+            if (!jpaRepository.existsById(id)) {
+                throw new LocationHistoryNotFoundException(id);
+            }
+            jpaRepository.deleteById(id);
+        } catch (LocationHistoryNotFoundException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new RepositoryOperationException("Failed to delete location history with ID: " + id, ex);
+        }
     }
 
     @Override
     public LocationHistoryModel update(LocationHistoryModel locationHistoryModel) {
-        LocationHistoryEntity entity = LocationHistoryMapper.toEntity(locationHistoryModel);
-        LocationHistoryEntity updatedEntity = jpaRepository.save(entity);
-        return LocationHistoryMapper.toDomain(updatedEntity);
+        try {
+            if (locationHistoryModel.getId() == null) {
+                throw new IllegalArgumentException("Location history ID cannot be null for update");
+            }
+            if (!jpaRepository.existsById(locationHistoryModel.getId())) {
+                throw new LocationHistoryNotFoundException(locationHistoryModel.getId());
+            }
+            LocationHistoryEntity entity = LocationHistoryMapper.toEntity(locationHistoryModel);
+            LocationHistoryEntity updatedEntity = jpaRepository.save(entity);
+            return LocationHistoryMapper.toDomain(updatedEntity);
+        } catch (LocationHistoryNotFoundException | IllegalArgumentException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new RepositoryOperationException("Failed to update location history", ex);
+        }
     }
 }

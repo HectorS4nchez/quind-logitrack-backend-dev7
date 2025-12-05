@@ -3,6 +3,7 @@ package com.quind.domain.model;
 
 public class RecipientModel {
 
+    private Long id;
     private String name;
     private String address;
 
@@ -30,5 +31,11 @@ public class RecipientModel {
         this.address = address;
     }
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

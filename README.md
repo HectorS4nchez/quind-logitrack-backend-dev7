@@ -51,25 +51,47 @@ mvn spring-boot:run
 ## Estructura del Proyecto
 
 ```
-src/
-├── main/
-│   └── java/
-│       └── com/quind/
-│           ├── domain/              # Capa de dominio
-│           │   ├── model/           # Entidades de dominio
-│           │   ├── port/            # Interfaces (puertos)
-│           │   ├── service/         # Servicios de dominio
-│           │   └── usecase/         # Casos de uso
-│           ├── repository/          # Capa de infraestructura
-│           │   └── adapter/         # Adaptadores de repositorio
-│           │       ├── jpa/         # JPA entities y repositorios
-│           │       └── mapper/      # Mappers
-│           ├── infrastructure/      # Infraestructura
-│           │   ├── client/          # Clientes REST externos
-│           │   └── config/          # Configuraciones
-│           └── apirest/             # Capa de presentación
-│               └── controller/      # Controladores REST
-└── test/                            # Pruebas unitarias
+quind-logitrack-backend-dev7/
+
+│── application/                
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/com/quind/application/
+│   │   │   └── resources/
+│   │   └── test/
+│   └── pom.xml
+│
+├── domain/
+│   ├── src/
+│   │   ├── main/java/com/quind/domain/
+│   │   │   ├── model/
+│   │   │   ├── usecase/
+│   │   │   └── exception/          
+│   │   │       
+│   │   └── test/
+│   └── pom.xml
+│
+├── infrastructure/                 
+│   ├── driven-adapters/             
+│   │   ├── repository/              
+│   │   │   ├── src/
+│   │   │   │   └── main/java/com/quind/repository/
+│   │   │   │       └── adapter/
+│   │   │   │           
+│   │   │   └── pom.xml
+│   │   └── pom.xml
+│   │
+│   ├── entry-points/                
+│   │   ├── api-rest/                
+│   │   │   ├── src/
+│   │   │   │   └── main/java/com/quind/apirest/
+│   │   │   │       └── controller
+│   │   │   └── pom.xml
+│   │   └── pom.xml
+│   │
+│   └── pom.xml
+│
+└── target/
 ```
 
 ## API Endpoints
@@ -323,27 +345,6 @@ Package pkg = new Package.Builder()
     .build();
 ```
 
-## Cliente REST - Geocodificación
-
-El sistema incluye un cliente para validar ubicaciones usando la API de OpenStreetMap:
-
-```java
-@Autowired
-private GeocodingClient geocodingClient;
-
-// Obtener coordenadas
-GeocodingResponse response = geocodingClient.getCoordinates("Bogota", "Colombia");
-
-// Validar ubicación
-boolean isValid = geocodingClient.validateLocation("Madrid", "Spain");
-```
-
-**Características del cliente:**
-- Manejo de errores HTTP (4xx, 5xx)
-- Reintentos automáticos (máximo 3 intentos)
-- Timeouts configurables (5 segundos)
-- Backoff exponencial entre reintentos
-
 ## Pruebas
 
 ### Ejecutar todas las pruebas
@@ -385,11 +386,3 @@ spring.jpa.hibernate.ddl-auto=update
 - **JUnit 5**
 - **Mockito**
 - **RestTemplate**
-
-## Autor
-
-Desarrollado como parte de la Fase 1: Núcleo del Dominio (Dev Essential)
-
-## Licencia
-
-MIT License
