@@ -44,7 +44,7 @@ public class PackageEntity {
         this.recipient = recipient;
         this.dimensions = dimensions;
         this.weight = weight;
-        this.status = PackageStatus.PENDING;
+        this.status = PackageStatus.CREATED;
         this.locationHistory = new ArrayList<>();
     }
 
