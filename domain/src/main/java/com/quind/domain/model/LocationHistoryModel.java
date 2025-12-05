@@ -2,15 +2,15 @@ package com.quind.domain.model;
 
 import java.time.LocalDateTime;
 
-public class LocationHistory {
+public class LocationHistoryModel {
     private String city;
     private String country;
     private LocalDateTime timestamp;
 
-    public LocationHistory() {
+    public LocationHistoryModel() {
     }
 
-    public LocationHistory(String city, String country, LocalDateTime timestamp) {
+    public LocationHistoryModel(String city, String country, LocalDateTime timestamp) {
         this.city = city;
         this.country = country;
         this.timestamp = timestamp;

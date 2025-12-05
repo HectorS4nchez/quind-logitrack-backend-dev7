@@ -1,15 +1,15 @@
 package com.quind.domain.model;
 
 
-public class Recipient {
+public class RecipientModel {
 
     private String name;
     private String address;
 
-    public Recipient() {
+    public RecipientModel() {
     }
 
-    public Recipient(String name, String address) {
+    public RecipientModel(String name, String address) {
         this.name = name;
         this.address = address;
     }

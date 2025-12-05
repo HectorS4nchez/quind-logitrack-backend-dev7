@@ -1,6 +1,10 @@
 package com.quind.domain.usecase;
 
+import com.quind.domain.model.RecipientModel;
 import com.quind.domain.port.repository.RecipientRepository;
+
+import java.util.List;
+import java.util.Optional;
 
 public class RecipientUseCase {
 
@@ -8,5 +12,33 @@ public class RecipientUseCase {
 
     public RecipientUseCase(RecipientRepository recipientRepository) {
         this.recipientRepository = recipientRepository;
+    }
+
+    public RecipientModel createRecipient(RecipientModel recipient) {
+        return recipientRepository.save(recipient);
+    }
+
+    public Optional<RecipientModel> getRecipientById(Long id) {
+        return recipientRepository.findById(id);
+    }
+
+    public List<RecipientModel> getAllRecipients() {
+        return recipientRepository.findAll();
+    }
+
+    public List<RecipientModel> getRecipientsByName(String name) {
+        return recipientRepository.findByName(name);
+    }
+
+    public boolean recipientExists(Long id) {
+        return recipientRepository.existsById(id);
+    }
+
+    public RecipientModel updateRecipient(RecipientModel recipient) {
+        return recipientRepository.update(recipient);
+    }
+
+    public void deleteRecipient(Long id) {
+        recipientRepository.deleteById(id);
     }
 }

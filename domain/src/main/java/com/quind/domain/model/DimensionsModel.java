@@ -1,15 +1,15 @@
 package com.quind.domain.model;
 
-public class Dimensions {
+public class DimensionsModel {
 
     private double height;
     private double width;
     private double depth;
 
-    public Dimensions() {
+    public DimensionsModel() {
     }
 
-    public Dimensions(double height, double width, double depth) {
+    public DimensionsModel(double height, double width, double depth) {
         this.height = height;
         this.width = width;
         this.depth = depth;
