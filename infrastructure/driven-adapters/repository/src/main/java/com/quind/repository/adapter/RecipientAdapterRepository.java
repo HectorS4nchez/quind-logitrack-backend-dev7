@@ -7,27 +7,26 @@ import com.quind.domain.port.repository.RecipientRepository;
 import com.quind.repository.adapter.jpa.entity.RecipientEntity;
 import com.quind.repository.adapter.jpa.repository.RecipientJpaRepository;
 import com.quind.repository.adapter.jpa.mapper.RecipientMapper;
-import org.springframework.stereotype.Repository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Repository
+@Component
+@RequiredArgsConstructor
 public class RecipientAdapterRepository implements RecipientRepository {
 
     private final RecipientJpaRepository jpaRepository;
-
-    public RecipientAdapterRepository(RecipientJpaRepository jpaRepository) {
-        this.jpaRepository = jpaRepository;
-    }
+    private final RecipientMapper  recipientMapper;
 
     @Override
     public RecipientModel save(RecipientModel recipientModel) {
         try {
-            RecipientEntity entity = RecipientMapper.toEntity(recipientModel);
+            RecipientEntity entity = recipientMapper.toEntity(recipientModel);
             RecipientEntity savedEntity = jpaRepository.save(entity);
-            return RecipientMapper.toDomain(savedEntity);
+            return recipientMapper.toDomain(savedEntity);
         } catch (Exception ex) {
             throw new RepositoryOperationException("Failed to save recipient", ex);
         }
@@ -37,7 +36,7 @@ public class RecipientAdapterRepository implements RecipientRepository {
     public Optional<RecipientModel> findById(Long id) {
         try {
             return jpaRepository.findById(id)
-                    .map(RecipientMapper::toDomain);
+                    .map(recipientMapper::toDomain);
         } catch (Exception ex) {
             throw new RepositoryOperationException("Failed to find recipient by ID: " + id, ex);
         }
@@ -47,7 +46,7 @@ public class RecipientAdapterRepository implements RecipientRepository {
     public List<RecipientModel> findAll() {
         try {
             return jpaRepository.findAll().stream()
-                    .map(RecipientMapper::toDomain)
+                    .map(recipientMapper::toDomain)
                     .collect(Collectors.toList());
         } catch (Exception ex) {
             throw new RepositoryOperationException("Failed to retrieve all recipients", ex);
@@ -61,7 +60,7 @@ public class RecipientAdapterRepository implements RecipientRepository {
                 throw new IllegalArgumentException("Recipient name cannot be null or empty");
             }
             return jpaRepository.findByName(name).stream()
-                    .map(RecipientMapper::toDomain)
+                    .map(recipientMapper::toDomain)
                     .collect(Collectors.toList());
         } catch (IllegalArgumentException ex) {
             throw ex;
@@ -102,9 +101,9 @@ public class RecipientAdapterRepository implements RecipientRepository {
             if (!jpaRepository.existsById(recipientModel.getId())) {
                 throw new RecipientNotFoundException(recipientModel.getId());
             }
-            RecipientEntity entity = RecipientMapper.toEntity(recipientModel);
+            RecipientEntity entity = recipientMapper.toEntity(recipientModel);
             RecipientEntity updatedEntity = jpaRepository.save(entity);
-            return RecipientMapper.toDomain(updatedEntity);
+            return recipientMapper.toDomain(updatedEntity);
         } catch (RecipientNotFoundException | IllegalArgumentException ex) {
             throw ex;
         } catch (Exception ex) {

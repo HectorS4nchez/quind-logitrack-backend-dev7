@@ -7,28 +7,27 @@ import com.quind.domain.port.repository.LocationHistoryRepository;
 import com.quind.repository.adapter.jpa.entity.LocationHistoryEntity;
 import com.quind.repository.adapter.jpa.repository.LocationHistoryJpaRepository;
 import com.quind.repository.adapter.jpa.mapper.LocationHistoryMapper;
-import org.springframework.stereotype.Repository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Repository
+@Component
+@RequiredArgsConstructor
 public class LocationHistoryAdapterRepository implements LocationHistoryRepository {
 
     private final LocationHistoryJpaRepository jpaRepository;
-
-    public LocationHistoryAdapterRepository(LocationHistoryJpaRepository jpaRepository) {
-        this.jpaRepository = jpaRepository;
-    }
+    private final LocationHistoryMapper locationHistoryMapper;
 
     @Override
     public LocationHistoryModel save(LocationHistoryModel locationHistoryModel) {
         try {
-            LocationHistoryEntity entity = LocationHistoryMapper.toEntity(locationHistoryModel);
+            LocationHistoryEntity entity = locationHistoryMapper.toEntity(locationHistoryModel);
             LocationHistoryEntity savedEntity = jpaRepository.save(entity);
-            return LocationHistoryMapper.toDomain(savedEntity);
+            return locationHistoryMapper.toDomain(savedEntity);
         } catch (Exception ex) {
             throw new RepositoryOperationException("Failed to save location history", ex);
         }
@@ -38,7 +37,7 @@ public class LocationHistoryAdapterRepository implements LocationHistoryReposito
     public Optional<LocationHistoryModel> findById(Long id) {
         try {
             return jpaRepository.findById(id)
-                    .map(LocationHistoryMapper::toDomain);
+                    .map(locationHistoryMapper::toDomain);
         } catch (Exception ex) {
             throw new RepositoryOperationException("Failed to find location history by ID: " + id, ex);
         }
@@ -48,7 +47,7 @@ public class LocationHistoryAdapterRepository implements LocationHistoryReposito
     public List<LocationHistoryModel> findAll() {
         try {
             return jpaRepository.findAll().stream()
-                    .map(LocationHistoryMapper::toDomain)
+                    .map(locationHistoryMapper::toDomain)
                     .collect(Collectors.toList());
         } catch (Exception ex) {
             throw new RepositoryOperationException("Failed to retrieve all location histories", ex);
@@ -62,7 +61,7 @@ public class LocationHistoryAdapterRepository implements LocationHistoryReposito
                 throw new IllegalArgumentException("City cannot be null or empty");
             }
             return jpaRepository.findByCity(city).stream()
-                    .map(LocationHistoryMapper::toDomain)
+                    .map(locationHistoryMapper::toDomain)
                     .collect(Collectors.toList());
         } catch (IllegalArgumentException ex) {
             throw ex;
@@ -78,7 +77,7 @@ public class LocationHistoryAdapterRepository implements LocationHistoryReposito
                 throw new IllegalArgumentException("Country cannot be null or empty");
             }
             return jpaRepository.findByCountry(country).stream()
-                    .map(LocationHistoryMapper::toDomain)
+                    .map(locationHistoryMapper::toDomain)
                     .collect(Collectors.toList());
         } catch (IllegalArgumentException ex) {
             throw ex;
@@ -97,7 +96,7 @@ public class LocationHistoryAdapterRepository implements LocationHistoryReposito
                 throw new IllegalArgumentException("Start date must be before end date");
             }
             return jpaRepository.findByDateRange(start, end).stream()
-                    .map(LocationHistoryMapper::toDomain)
+                    .map(locationHistoryMapper::toDomain)
                     .collect(Collectors.toList());
         } catch (IllegalArgumentException ex) {
             throw ex;
@@ -139,9 +138,9 @@ public class LocationHistoryAdapterRepository implements LocationHistoryReposito
             if (!jpaRepository.existsById(locationHistoryModel.getId())) {
                 throw new LocationHistoryNotFoundException(locationHistoryModel.getId());
             }
-            LocationHistoryEntity entity = LocationHistoryMapper.toEntity(locationHistoryModel);
+            LocationHistoryEntity entity = locationHistoryMapper.toEntity(locationHistoryModel);
             LocationHistoryEntity updatedEntity = jpaRepository.save(entity);
-            return LocationHistoryMapper.toDomain(updatedEntity);
+            return locationHistoryMapper.toDomain(updatedEntity);
         } catch (LocationHistoryNotFoundException | IllegalArgumentException ex) {
             throw ex;
         } catch (Exception ex) {
