@@ -1,4 +1,4 @@
-package com.quind.domain.constants;
+package com.quind.domain.model.enums;
 
 public enum PackageStatus {
     PENDING,

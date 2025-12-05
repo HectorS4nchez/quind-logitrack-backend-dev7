@@ -1,17 +1,12 @@
 package com.quind.domain.model;
 
-import com.quind.domain.constants.PackageStatus;
-import lombok.Getter;
-import lombok.ToString;
+import com.quind.domain.model.enums.PackageStatus;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@ToString
 public class Package {
-
 
     private String trackingId;
     private Recipient recipient;
