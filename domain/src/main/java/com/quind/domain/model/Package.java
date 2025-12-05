@@ -27,7 +27,6 @@ public class Package {
         this.locationHistory = new ArrayList<>();
     }
 
-    // Métodos de comportamiento
     public void addLocation(String city, String country, LocalDateTime timestamp) {
         LocationHistory newLocation = new LocationHistory(city, country, timestamp);
         this.locationHistory.add(newLocation);

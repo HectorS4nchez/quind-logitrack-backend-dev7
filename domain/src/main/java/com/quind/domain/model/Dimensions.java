@@ -1,7 +1,5 @@
 package com.quind.domain.model;
 
-
-
 public class Dimensions {
 
     private double height;
