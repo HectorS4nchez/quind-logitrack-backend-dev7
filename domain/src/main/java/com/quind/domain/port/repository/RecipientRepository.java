@@ -9,7 +9,6 @@ public interface RecipientRepository {
     RecipientModel save(RecipientModel recipientModel);
     Optional<RecipientModel> findById(Long id);
     List<RecipientModel> findAll();
-    List<RecipientModel> findByName(String name);
     boolean existsById(Long id);
     void deleteById(Long id);
     RecipientModel update(RecipientModel recipientModel);

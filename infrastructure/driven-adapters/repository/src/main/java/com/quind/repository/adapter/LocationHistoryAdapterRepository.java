@@ -55,58 +55,6 @@ public class LocationHistoryAdapterRepository implements LocationHistoryReposito
     }
 
     @Override
-    public List<LocationHistoryModel> findByCity(String city) {
-        try {
-            if (city == null || city.trim().isEmpty()) {
-                throw new IllegalArgumentException("City cannot be null or empty");
-            }
-            return jpaRepository.findByCity(city).stream()
-                    .map(locationHistoryMapper::toDomain)
-                    .collect(Collectors.toList());
-        } catch (IllegalArgumentException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw new RepositoryOperationException("Failed to find location histories by city: " + city, ex);
-        }
-    }
-
-    @Override
-    public List<LocationHistoryModel> findByCountry(String country) {
-        try {
-            if (country == null || country.trim().isEmpty()) {
-                throw new IllegalArgumentException("Country cannot be null or empty");
-            }
-            return jpaRepository.findByCountry(country).stream()
-                    .map(locationHistoryMapper::toDomain)
-                    .collect(Collectors.toList());
-        } catch (IllegalArgumentException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw new RepositoryOperationException("Failed to find location histories by country: " + country, ex);
-        }
-    }
-
-    @Override
-    public List<LocationHistoryModel> findByDateRange(LocalDateTime start, LocalDateTime end) {
-        try {
-            if (start == null || end == null) {
-                throw new IllegalArgumentException("Start and end dates cannot be null");
-            }
-            if (start.isAfter(end)) {
-                throw new IllegalArgumentException("Start date must be before end date");
-            }
-            return jpaRepository.findByDateRange(start, end).stream()
-                    .map(locationHistoryMapper::toDomain)
-                    .collect(Collectors.toList());
-        } catch (IllegalArgumentException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw new RepositoryOperationException(
-                    String.format("Failed to find location histories by date range: %s to %s", start, end), ex);
-        }
-    }
-
-    @Override
     public boolean existsById(Long id) {
         try {
             return jpaRepository.existsById(id);

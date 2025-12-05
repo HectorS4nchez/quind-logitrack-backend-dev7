@@ -35,11 +35,6 @@ public class RecipientController {
         return ResponseEntity.ok(recipients);
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<RecipientModel>> getRecipientsByName(@RequestParam String name) {
-        List<RecipientModel> recipients = recipientUseCase.getRecipientsByName(name);
-        return ResponseEntity.ok(recipients);
-    }
 
     @PutMapping("/{id}")
     public ResponseEntity<RecipientModel> updateRecipient(@PathVariable Long id, @RequestBody RecipientModel recipient) {

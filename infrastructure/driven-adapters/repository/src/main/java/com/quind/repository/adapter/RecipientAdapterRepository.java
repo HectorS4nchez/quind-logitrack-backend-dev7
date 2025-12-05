@@ -54,22 +54,6 @@ public class RecipientAdapterRepository implements RecipientRepository {
     }
 
     @Override
-    public List<RecipientModel> findByName(String name) {
-        try {
-            if (name == null || name.trim().isEmpty()) {
-                throw new IllegalArgumentException("Recipient name cannot be null or empty");
-            }
-            return jpaRepository.findByName(name).stream()
-                    .map(recipientMapper::toDomain)
-                    .collect(Collectors.toList());
-        } catch (IllegalArgumentException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw new RepositoryOperationException("Failed to find recipients by name: " + name, ex);
-        }
-    }
-
-    @Override
     public boolean existsById(Long id) {
         try {
             return jpaRepository.existsById(id);

@@ -26,10 +26,6 @@ public class RecipientUseCase {
         return recipientRepository.findAll();
     }
 
-    public List<RecipientModel> getRecipientsByName(String name) {
-        return recipientRepository.findByName(name);
-    }
-
     public boolean recipientExists(Long id) {
         return recipientRepository.existsById(id);
     }
