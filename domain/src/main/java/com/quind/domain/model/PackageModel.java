@@ -54,9 +54,6 @@ public class PackageModel {
         this.locationHistory.add(newLocation);
     }
 
-    public void addLocation(String city, String country) {
-        addLocation(city, country, LocalDateTime.now());
-    }
 
     public void changeStatus(PackageStatus newStatus) {
         PackageStateValidator.validateTransition(this.status, newStatus);
@@ -109,7 +106,7 @@ public class PackageModel {
         }
     }
 
-    // Getters and Setters
+
     public String getTrackingId() {
         return trackingId;
     }
@@ -158,7 +155,7 @@ public class PackageModel {
         this.locationHistory = locationHistory;
     }
 
-    // Builder Pattern
+
     public static class Builder {
         private String trackingId;
         private RecipientModel recipient;
