@@ -14,13 +14,26 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Adaptador de repositorio para destinatarios que delega
+ * operaciones de persistencia a JPA y mapea entre dominio y entidad. [web:11]
+ *
+ * @author Hector Andres Sanchez
+ */
 @Component
 @RequiredArgsConstructor
 public class RecipientAdapterRepository implements RecipientRepository {
 
     private final RecipientJpaRepository jpaRepository;
-    private final RecipientMapper  recipientMapper;
+    private final RecipientMapper recipientMapper;
 
+    /**
+     * Persiste un destinatario. [web:11]
+     *
+     * @param recipientModel Modelo a persistir [web:11]
+     * @return Modelo persistido con ID generado [web:11]
+     * @throws RepositoryOperationException si falla la operación [web:15]
+     */
     @Override
     public RecipientModel save(RecipientModel recipientModel) {
         try {
@@ -32,6 +45,13 @@ public class RecipientAdapterRepository implements RecipientRepository {
         }
     }
 
+    /**
+     * Busca un destinatario por ID. [web:11]
+     *
+     * @param id Identificador del destinatario [web:11]
+     * @return Optional con el modelo si existe [web:11]
+     * @throws RepositoryOperationException si falla la búsqueda [web:15]
+     */
     @Override
     public Optional<RecipientModel> findById(Long id) {
         try {
@@ -42,6 +62,12 @@ public class RecipientAdapterRepository implements RecipientRepository {
         }
     }
 
+    /**
+     * Obtiene todos los destinatarios. [web:11]
+     *
+     * @return Lista de todos los destinatarios [web:11]
+     * @throws RepositoryOperationException si falla la consulta [web:15]
+     */
     @Override
     public List<RecipientModel> findAll() {
         try {
@@ -53,6 +79,13 @@ public class RecipientAdapterRepository implements RecipientRepository {
         }
     }
 
+    /**
+     * Verifica si existe un destinatario por ID. [web:11]
+     *
+     * @param id Identificador a verificar [web:11]
+     * @return true si existe, false en caso contrario [web:11]
+     * @throws RepositoryOperationException si falla la verificación [web:15]
+     */
     @Override
     public boolean existsById(Long id) {
         try {
@@ -62,6 +95,13 @@ public class RecipientAdapterRepository implements RecipientRepository {
         }
     }
 
+    /**
+     * Elimina un destinatario por ID. [web:11]
+     *
+     * @param id Identificador del destinatario a eliminar [web:11]
+     * @throws RecipientNotFoundException si no existe [web:15]
+     * @throws RepositoryOperationException si falla la eliminación [web:15]
+     */
     @Override
     public void deleteById(Long id) {
         try {
@@ -76,6 +116,15 @@ public class RecipientAdapterRepository implements RecipientRepository {
         }
     }
 
+    /**
+     * Actualiza un destinatario existente. [web:11]
+     *
+     * @param recipientModel Modelo con datos actualizados (ID requerido) [web:11]
+     * @return Modelo actualizado [web:11]
+     * @throws IllegalArgumentException si ID es null [web:15]
+     * @throws RecipientNotFoundException si no existe [web:15]
+     * @throws RepositoryOperationException si falla la actualización [web:15]
+     */
     @Override
     public RecipientModel update(RecipientModel recipientModel) {
         try {
@@ -95,3 +144,4 @@ public class RecipientAdapterRepository implements RecipientRepository {
         }
     }
 }
+

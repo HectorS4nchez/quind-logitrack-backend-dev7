@@ -15,6 +15,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Adaptador de repositorio para paquetes que delega
+ * operaciones de persistencia a JPA y mapea entre dominio y entidad. [web:11]
+ * Gestiona la relación bidireccional con el historial de ubicaciones. [web:11]
+ *
+ * @author Hector Andres Sanchez
+ */
 @Component
 @RequiredArgsConstructor
 public class PackageAdapterRepository implements PackageRepository {
@@ -22,6 +29,14 @@ public class PackageAdapterRepository implements PackageRepository {
     private final PackageJpaRepository jpaRepository;
     private final PackageMapper packageMapper;
 
+    /**
+     * Persiste un paquete estableciendo la relación bidireccional
+     * con su historial de ubicaciones. [web:11]
+     *
+     * @param pkg Modelo de paquete a persistir [web:11]
+     * @return Modelo persistido con relaciones establecidas [web:11]
+     * @throws RepositoryOperationException si falla la operación [web:15]
+     */
     @Override
     public PackageModel save(PackageModel pkg) {
         PackageEntity entity = packageMapper.toEntity(pkg);
@@ -34,6 +49,13 @@ public class PackageAdapterRepository implements PackageRepository {
         return packageMapper.toDomain(saved);
     }
 
+    /**
+     * Busca un paquete por su tracking ID. [web:11]
+     *
+     * @param trackingId Identificador único de seguimiento del paquete [web:11]
+     * @return Optional con el modelo si existe [web:11]
+     * @throws RepositoryOperationException si falla la búsqueda [web:15]
+     */
     @Override
     public Optional<PackageModel> findById(String trackingId) {
         try {
@@ -44,6 +66,12 @@ public class PackageAdapterRepository implements PackageRepository {
         }
     }
 
+    /**
+     * Obtiene todos los paquetes. [web:11]
+     *
+     * @return Lista de todos los paquetes [web:11]
+     * @throws RepositoryOperationException si falla la consulta [web:15]
+     */
     @Override
     public List<PackageModel> findAll() {
         try {
@@ -55,6 +83,13 @@ public class PackageAdapterRepository implements PackageRepository {
         }
     }
 
+    /**
+     * Verifica si existe un paquete por tracking ID. [web:11]
+     *
+     * @param trackingId Identificador de seguimiento a verificar [web:11]
+     * @return true si existe, false en caso contrario [web:11]
+     * @throws RepositoryOperationException si falla la verificación [web:15]
+     */
     @Override
     public boolean existsById(String trackingId) {
         try {
@@ -64,6 +99,13 @@ public class PackageAdapterRepository implements PackageRepository {
         }
     }
 
+    /**
+     * Elimina un paquete por tracking ID. [web:11]
+     *
+     * @param trackingId Identificador del paquete a eliminar [web:11]
+     * @throws PackageNotFoundException si no existe [web:15]
+     * @throws RepositoryOperationException si falla la eliminación [web:15]
+     */
     @Override
     public void deleteById(String trackingId) {
         try {
@@ -78,6 +120,14 @@ public class PackageAdapterRepository implements PackageRepository {
         }
     }
 
+    /**
+     * Actualiza un paquete existente. [web:11]
+     *
+     * @param pkg Modelo con datos actualizados (tracking ID requerido) [web:11]
+     * @return Modelo actualizado [web:11]
+     * @throws PackageNotFoundException si no existe [web:15]
+     * @throws RepositoryOperationException si falla la actualización [web:15]
+     */
     @Override
     public PackageModel update(PackageModel pkg) {
         try {
