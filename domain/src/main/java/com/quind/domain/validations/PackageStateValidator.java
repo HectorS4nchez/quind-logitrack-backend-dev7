@@ -1,4 +1,4 @@
-package com.quind.domain.usecase;
+package com.quind.domain.validations;
 
 import com.quind.domain.model.enums.PackageStatus;
 

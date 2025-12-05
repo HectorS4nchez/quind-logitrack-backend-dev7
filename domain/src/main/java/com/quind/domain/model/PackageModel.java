@@ -1,7 +1,7 @@
 package com.quind.domain.model;
 
 import com.quind.domain.model.enums.PackageStatus;
-import com.quind.domain.usecase.PackageStateValidator;
+import com.quind.domain.validations.PackageStateValidator;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
