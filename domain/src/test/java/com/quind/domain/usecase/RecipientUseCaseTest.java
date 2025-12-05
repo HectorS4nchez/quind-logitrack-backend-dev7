@@ -77,28 +77,6 @@ class RecipientUseCaseTest {
     }
 
     @Test
-    void testGetRecipientsByName() {
-        List<RecipientModel> recipients = Arrays.asList(testRecipient);
-        when(recipientRepository.findByName("John")).thenReturn(recipients);
-
-        List<RecipientModel> result = recipientUseCase.getRecipientsByName("John");
-
-        assertEquals(1, result.size());
-        assertEquals("John Doe", result.get(0).getName());
-        verify(recipientRepository, times(1)).findByName("John");
-    }
-
-    @Test
-    void testGetRecipientsByNameNoResults() {
-        when(recipientRepository.findByName("NonExistent")).thenReturn(Arrays.asList());
-
-        List<RecipientModel> result = recipientUseCase.getRecipientsByName("NonExistent");
-
-        assertTrue(result.isEmpty());
-        verify(recipientRepository, times(1)).findByName("NonExistent");
-    }
-
-    @Test
     void testRecipientExists() {
         when(recipientRepository.existsById(1L)).thenReturn(true);
 

@@ -18,8 +18,8 @@
         </processorPath>
         <module name="application" />
         <module name="repository" />
-        <module name="api-rest" />
         <module name="domain" />
+        <module name="api-rest" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
