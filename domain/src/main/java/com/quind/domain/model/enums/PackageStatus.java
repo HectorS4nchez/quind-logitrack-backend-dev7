@@ -1,10 +1,10 @@
 package com.quind.domain.model.enums;
 
 public enum PackageStatus {
-    PENDING,
+    CREATED,
     IN_TRANSIT,
     OUT_FOR_DELIVERY,
     DELIVERED,
-    RETURNED,
-    CANCELLED
+    DELIVERY_FAILED,
+    RETURNED
 }
