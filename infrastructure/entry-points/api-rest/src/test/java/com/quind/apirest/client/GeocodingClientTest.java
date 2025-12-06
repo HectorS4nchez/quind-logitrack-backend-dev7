@@ -1,5 +1,6 @@
 package com.quind.apirest.client;
 
+import com.quind.apirest.controller.client.GeocodingClient;
 import com.quind.apirest.controller.response.GeocodingResponse;
 import com.quind.domain.exception.GeocodingException;
 import org.junit.jupiter.api.BeforeEach;

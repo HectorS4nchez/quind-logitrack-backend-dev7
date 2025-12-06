@@ -1,4 +1,4 @@
-package com.quind.apirest.client;
+package com.quind.apirest.controller.client;
 
 import com.quind.apirest.controller.response.GeocodingResponse;
 import com.quind.domain.exception.GeocodingException;

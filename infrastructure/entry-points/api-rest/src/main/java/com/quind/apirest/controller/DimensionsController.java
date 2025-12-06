@@ -1,13 +1,19 @@
 package com.quind.apirest.controller;
 
+import com.quind.apirest.controller.request.DimensionsRequestDTO;
+import com.quind.apirest.controller.response.DimensionsResponseDTO;
+import com.quind.apirest.controller.mapper.DimensionsRestMapper;
 import com.quind.domain.model.DimensionsModel;
 import com.quind.domain.usecase.DimensionsUseCase;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 
 @RestController
 @RequestMapping("/api/dimensions")
@@ -15,33 +21,42 @@ import java.util.List;
 public class DimensionsController {
 
     private final DimensionsUseCase dimensionsUseCase;
+    private final DimensionsRestMapper dimensionsRestMapper;
 
     @PostMapping
-    public ResponseEntity<DimensionsModel> createDimensions(@RequestBody DimensionsModel dimensions) {
-        DimensionsModel created = dimensionsUseCase.createDimensions(dimensions);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    public ResponseEntity<DimensionsResponseDTO> createDimensions(@Valid @RequestBody DimensionsRequestDTO request) {
+        DimensionsModel model = dimensionsRestMapper.toModel(request);
+        DimensionsModel created = dimensionsUseCase.createDimensions(model);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dimensionsRestMapper.toResponseDTO(created));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DimensionsModel> getDimensionsById(@PathVariable Long id) {
+    public ResponseEntity<DimensionsResponseDTO> getDimensionsById(@PathVariable Long id) {
         return dimensionsUseCase.getDimensionsById(id)
+                .map(dimensionsRestMapper::toResponseDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
-    public ResponseEntity<List<DimensionsModel>> getAllDimensions() {
-        List<DimensionsModel> dimensions = dimensionsUseCase.getAllDimensions();
+    public ResponseEntity<List<DimensionsResponseDTO>> getAllDimensions() {
+        List<DimensionsResponseDTO> dimensions = dimensionsUseCase.getAllDimensions().stream()
+                .map(dimensionsRestMapper::toResponseDTO)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(dimensions);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DimensionsModel> updateDimensions(@PathVariable Long id, @RequestBody DimensionsModel dimensions) {
+    public ResponseEntity<DimensionsResponseDTO> updateDimensions(
+            @PathVariable Long id,
+            @Valid @RequestBody DimensionsRequestDTO request) {
         if (!dimensionsUseCase.dimensionsExists(id)) {
             return ResponseEntity.notFound().build();
         }
-        DimensionsModel updated = dimensionsUseCase.updateDimensions(dimensions);
-        return ResponseEntity.ok(updated);
+        DimensionsModel model = dimensionsRestMapper.toModel(request);
+        model.setId(id);
+        DimensionsModel updated = dimensionsUseCase.updateDimensions(model);
+        return ResponseEntity.ok(dimensionsRestMapper.toResponseDTO(updated));
     }
 
     @DeleteMapping("/{id}")

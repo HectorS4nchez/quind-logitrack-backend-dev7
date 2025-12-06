@@ -1,9 +1,13 @@
 package com.quind.apirest.controller;
 
-import com.quind.apirest.client.GeocodingClient;
+import com.quind.apirest.controller.client.GeocodingClient;
+import com.quind.apirest.controller.request.PackageRequestDTO;
+import com.quind.apirest.controller.response.PackageResponseDTO;
+import com.quind.apirest.controller.mapper.PackageRestMapper;
 import com.quind.domain.model.PackageModel;
 import com.quind.domain.model.enums.PackageStatus;
 import com.quind.domain.usecase.PackageUseCase;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -21,34 +25,41 @@ import java.util.Map;
 public class PackageController {
 
     private final PackageUseCase packageUseCase;
+    private final PackageRestMapper packageDTOMapper;
     private final GeocodingClient geocodingClient;
 
     @PostMapping
-    public ResponseEntity<PackageModel> createPackage(@RequestBody PackageModel pkg) {
-        PackageModel created = packageUseCase.createPackage(pkg);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    public ResponseEntity<PackageResponseDTO> createPackage(@Valid @RequestBody PackageRequestDTO request) {
+        PackageModel model = packageDTOMapper.toModel(request);
+        PackageModel created = packageUseCase.createPackage(model);
+        return ResponseEntity.status(HttpStatus.CREATED).body(packageDTOMapper.toResponseDTO(created));
     }
 
     @GetMapping("/{trackingId}")
-    public ResponseEntity<PackageModel> getPackageById(@PathVariable String trackingId) {
+    public ResponseEntity<PackageResponseDTO> getPackageById(@PathVariable String trackingId) {
         return packageUseCase.getPackageById(trackingId)
+                .map(packageDTOMapper::toResponseDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
-    public ResponseEntity<List<PackageModel>> getAllPackages() {
+    public ResponseEntity<List<PackageResponseDTO>> getAllPackages() {
         List<PackageModel> packages = packageUseCase.getAllPackages();
-        return ResponseEntity.ok(packages);
+        return ResponseEntity.ok(packageDTOMapper.toResponseDTOList(packages));
     }
 
     @PutMapping("/{trackingId}")
-    public ResponseEntity<PackageModel> updatePackage(@PathVariable String trackingId, @RequestBody PackageModel pkg) {
+    public ResponseEntity<PackageResponseDTO> updatePackage(
+            @PathVariable String trackingId,
+            @Valid @RequestBody PackageRequestDTO request) {
         if (!packageUseCase.packageExists(trackingId)) {
             return ResponseEntity.notFound().build();
         }
-        PackageModel updated = packageUseCase.updatePackage(pkg);
-        return ResponseEntity.ok(updated);
+        PackageModel model = packageDTOMapper.toModel(request);
+        model.setTrackingId(trackingId);
+        PackageModel updated = packageUseCase.updatePackage(model);
+        return ResponseEntity.ok(packageDTOMapper.toResponseDTO(updated));
     }
 
     @DeleteMapping("/{trackingId}")
@@ -61,12 +72,12 @@ public class PackageController {
     }
 
     @PatchMapping("/{trackingId}/status")
-    public ResponseEntity<PackageModel> changePackageStatus(
+    public ResponseEntity<PackageResponseDTO> changePackageStatus(
             @PathVariable String trackingId,
             @RequestParam PackageStatus status) {
         try {
             PackageModel updated = packageUseCase.changePackageStatus(trackingId, status);
-            return ResponseEntity.ok(updated);
+            return ResponseEntity.ok(packageDTOMapper.toResponseDTO(updated));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
@@ -93,7 +104,7 @@ public class PackageController {
             } else {
                 updated = packageUseCase.addLocationToPackage(trackingId, city, country);
             }
-            return ResponseEntity.ok(updated);
+            return ResponseEntity.ok(packageDTOMapper.toResponseDTO(updated));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
