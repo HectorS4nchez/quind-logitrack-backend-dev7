@@ -17,12 +17,10 @@
           <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar" />
         </processorPath>
         <module name="application" />
-        <module name="repository" />
-        <module name="domain" />
-        <module name="api-rest" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="consumer" target="21" />
       <module name="infrastructure" target="17" />
     </bytecodeTargetLevel>
   </component>
@@ -30,8 +28,10 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api-rest" options="-parameters" />
       <module name="application" options="-parameters" />
+      <module name="consumer" options="-parameters" />
       <module name="domain" options="-parameters" />
       <module name="infrastructure" options="-parameters" />
+      <module name="kafka-consumer" options="-parameters" />
       <module name="quind-logitrack-backend-dev7" options="-parameters" />
       <module name="repository" options="-parameters" />
     </option>

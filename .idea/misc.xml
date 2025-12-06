@@ -10,6 +10,7 @@
         <option value="$PROJECT_DIR$/infrastructure/pom.xml" />
         <option value="$PROJECT_DIR$/infrastructure/driven-adapters/repository/pom.xml" />
         <option value="$PROJECT_DIR$/infrastructure/entry-points/api-rest/pom.xml" />
+        <option value="$PROJECT_DIR$/infrastructure/entry-points/kafka-consumer/pom.xml" />
       </list>
     </option>
   </component>

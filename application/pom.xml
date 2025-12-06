@@ -36,6 +36,11 @@
 
         <dependency>
             <groupId>com.quind</groupId>
+            <artifactId>kafka-consumer</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.quind</groupId>
             <artifactId>api-rest</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
