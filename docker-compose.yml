@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: 'postgres:13'
+    container_name: postgresquind
+    environment:
+      POSTGRES_DB: flypass
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    mem_limit: 512m
+    mem_reservation: 256m
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d flypass"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    networks:
+      - app-network     # ← NECESARIO
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: package-tracking-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/flypass
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: secret
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
